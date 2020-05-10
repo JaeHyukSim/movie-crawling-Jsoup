@@ -149,7 +149,9 @@ public class Movies_JSOUP {
 
 		try {
 			Document doc2 = jsoup.connect(url).get();
-			Elements title = doc2.select("#content .article .mv_info .info_spec a");
+			//Elements title = doc2.select("#content .article .mv_info .info_spec a");
+			Element parentTitle = doc2.selectFirst("#content .article .mv_info .info_spec");
+			Elements title = parentTitle.select("a");
 			res = getInfoTitle(kind, title);
 		} catch (Exception ex) {
 			ex.printStackTrace();

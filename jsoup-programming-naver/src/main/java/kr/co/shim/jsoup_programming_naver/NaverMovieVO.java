@@ -10,7 +10,7 @@ public class NaverMovieVO {
 	private String genre;
 	private String country;
 	private Date running_time;
-	private double hit;
+	private int hit;
 	private int audience_count;
 	private String story;
 
@@ -70,11 +70,11 @@ public class NaverMovieVO {
 		this.running_time = running_time;
 	}
 
-	public double getHit() {
+	public int getHit() {
 		return hit;
 	}
 
-	public void setHit(double hit) {
+	public void setHit(int hit) {
 		this.hit = hit;
 	}
 
