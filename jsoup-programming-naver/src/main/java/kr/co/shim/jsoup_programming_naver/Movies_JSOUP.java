@@ -55,10 +55,10 @@ public class Movies_JSOUP {
 				}
 				vo.setGenre(getMovieInfoByKind(movieUrl, "genre="));
 				vo.setCountry(getMovieInfoByKind(movieUrl, "nation="));
+				int runningTime = 0;
 				try {
-					System.out.println("??" + getMovieRunningTime(movieUrl));
-					Date runningDate = dateFormat.parse(getMovieRunningTime(movieUrl));
-					vo.setRunning_time(runningDate);
+					runningTime =Integer.parseInt(getMovieRunningTime(movieUrl));
+					vo.setRunning_time(runningTime);
 				}catch(Exception e) {
 				}
 				String hitString = getMovieInfoByKind(movieUrl, "view=");
@@ -149,7 +149,6 @@ public class Movies_JSOUP {
 
 		try {
 			Document doc2 = jsoup.connect(url).get();
-			//Elements title = doc2.select("#content .article .mv_info .info_spec a");
 			Element parentTitle = doc2.selectFirst("#content .article .mv_info .info_spec");
 			Elements title = parentTitle.select("a");
 			res = getInfoTitle(kind, title);
@@ -177,9 +176,16 @@ public class Movies_JSOUP {
 
 		try {
 			Document doc2 = jsoup.connect(url).get();
-			Elements title = doc2.select("#content .article .mv_info .info_spec span:nth-child(3)");
-			res = title.text();
-			System.out.println("분 res : " + res);
+			Element parentTitle = doc2.selectFirst("#content .article .mv_info .info_spec");
+			Elements title = parentTitle.select("a");
+			for (Element info : title) {
+				if (info.attr("href").contains("nation=")) {
+					Element target = info.parent();
+					target = target.nextElementSibling();
+					res = target.text();
+					break;
+				}
+			}
 			if(res.indexOf("분") != -1)
 				res = res.substring(0, res.indexOf("분"));
 		} catch (Exception ex) {

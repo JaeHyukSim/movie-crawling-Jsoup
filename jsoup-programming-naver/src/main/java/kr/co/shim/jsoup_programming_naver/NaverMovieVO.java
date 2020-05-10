@@ -9,7 +9,7 @@ public class NaverMovieVO {
 	private Date opening_date;
 	private String genre;
 	private String country;
-	private Date running_time;
+	private int running_time;
 	private int hit;
 	private int audience_count;
 	private String story;
@@ -62,11 +62,11 @@ public class NaverMovieVO {
 		this.country = country;
 	}
 
-	public Date getRunning_time() {
+	public int getRunning_time() {
 		return running_time;
 	}
 
-	public void setRunning_time(Date running_time) {
+	public void setRunning_time(int running_time) {
 		this.running_time = running_time;
 	}
 

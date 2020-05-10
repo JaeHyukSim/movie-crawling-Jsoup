@@ -42,10 +42,10 @@ public class MainClass {
 		}
 		vo.setGenre(mj.getMovieInfoByKind(movieUrl, "genre="));
 		vo.setCountry(mj.getMovieInfoByKind(movieUrl, "nation="));
+		int runningTime = 0;
 		try {
-			System.out.println("??" + mj.getMovieRunningTime(movieUrl));
-			Date runningDate = dateFormat.parse(mj.getMovieRunningTime(movieUrl));
-			vo.setRunning_time(runningDate);
+			runningTime =Integer.parseInt(mj.getMovieRunningTime(movieUrl));
+			vo.setRunning_time(runningTime);
 		}catch(Exception e) {
 		}
 		String hitString = mj.getMovieInfoByKind(movieUrl, "view=");
