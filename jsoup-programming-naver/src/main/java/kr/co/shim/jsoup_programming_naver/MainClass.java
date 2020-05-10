@@ -18,16 +18,26 @@ public class MainClass {
 		//영화 데이터를 구한다
 		
 		Movies_JSOUP mj = new Movies_JSOUP();
-		/*
+		
 		List<NaverMovieVO> list = mj.getAllNaverMovie();
+		
+		MoviePictures_JSOUP mpj = new MoviePictures_JSOUP();
+		for(int i = 0; i < list.size(); i++) {
+			int id = list.get(i).getId();
+			List<String> pictureList = mpj.searchPicturesByUrl(id);
+			System.out.println("pictureList=============");
+			for(int j = 0; j < pictureList.size(); j++) {
+				System.out.println(pictureList.get(j));
+			}
+			System.out.println("=======================");
+		}
+		System.out.println("list size : " + list.size());
 		
 		//출력문
 		for(NaverMovieVO vo : list) {
 			System.out.println(vo.toString());
 		}
-		*/
-		//List<NaverMovieVO> listTest = mj.getAllNaverMovie();
-		
+		/*
 		NaverMovieVO vo = new NaverMovieVO();
 		String movieUrl = "https://movie.naver.com/movie/bi/mi/basic.nhn?code=191633";
 		
@@ -61,6 +71,7 @@ public class MainClass {
 		vo.setAudience_count(audienceCount);
 		vo.setStory(mj.getMovieStory(movieUrl));
 		System.out.println(vo.toString());
+		*/
 	}
 
 }

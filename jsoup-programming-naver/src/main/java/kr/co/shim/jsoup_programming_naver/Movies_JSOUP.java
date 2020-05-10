@@ -182,6 +182,9 @@ public class Movies_JSOUP {
 				if (info.attr("href").contains("nation=")) {
 					Element target = info.parent();
 					target = target.nextElementSibling();
+					if(target == null) {
+						return "";
+					}
 					res = target.text();
 					break;
 				}
