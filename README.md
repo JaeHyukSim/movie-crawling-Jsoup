@@ -61,3 +61,6 @@ _single underscores_
 **double asterisks**
 __double underscoresa__
 ~~cancelline~~
+
+![Alt text](/path/to/img.jpg)
+![Alt text](/path/to/img.jpg "Optional title")
