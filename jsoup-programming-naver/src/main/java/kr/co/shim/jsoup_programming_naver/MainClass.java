@@ -22,6 +22,7 @@ public class MainClass {
 		List<NaverMovieVO> list = mj.getAllNaverMovie();
 		
 		MoviePictures_JSOUP mpj = new MoviePictures_JSOUP();
+		
 		for(int i = 0; i < list.size(); i++) {
 			int id = list.get(i).getId();
 			List<String> pictureList = mpj.searchPicturesByUrl(id);
@@ -37,6 +38,8 @@ public class MainClass {
 		for(NaverMovieVO vo : list) {
 			System.out.println(vo.toString());
 		}
+		
+		//List<String> pictureList = mpj.searchPicturesByUrl(14448);
 		/*
 		NaverMovieVO vo = new NaverMovieVO();
 		String movieUrl = "https://movie.naver.com/movie/bi/mi/basic.nhn?code=191633";

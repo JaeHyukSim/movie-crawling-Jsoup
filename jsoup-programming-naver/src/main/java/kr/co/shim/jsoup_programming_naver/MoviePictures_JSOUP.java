@@ -65,6 +65,7 @@ public class MoviePictures_JSOUP {
 		for (Element picture : pictures) {
 			String pictureUrl = picture.attr("src");
 			list.add(pictureUrl);
+			System.out.println(pictureUrl);
 		}
 	}
 }

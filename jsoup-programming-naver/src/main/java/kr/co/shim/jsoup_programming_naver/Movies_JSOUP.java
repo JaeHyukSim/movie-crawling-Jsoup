@@ -30,46 +30,47 @@ public class Movies_JSOUP {
 	// VO형태로 모든 뮤비를 출력해주는 메서드
 	public List<NaverMovieVO> getAllNaverMovie() {
 		List<NaverMovieVO> res = new ArrayList<NaverMovieVO>();
-		List<String> list;
+		List<Pair> list;
 		List<List<String>> movieList = new ArrayList<List<String>>();
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd");
 		list = searchYearToGetMovies();
 
 		for (int i = 0; i < list.size(); i++) {
-			movieList.add(searchListToGetMovies(list.get(i)));
+			movieList.add(searchListToGetMovies(list.get(i).first, list.get(i).second));
 		}
 
 		for (int i = 0; i < movieList.size(); i++) {
 			for (int j = 0; j < movieList.get(i).size(); j++) {
 				NaverMovieVO vo = new NaverMovieVO();
 				String movieUrl = movieList.get(i).get(j);
-				
+
 				vo.setId(Integer.parseInt(getMovieId(movieUrl)));
 				vo.setTitle(getMovieTitle(movieUrl));
 				vo.setGrade(getMovieInfoByKind(movieUrl, "grade="));
 				try {
 					Date openningDate = dateFormat.parse(getMovieInfoByKind(movieUrl, "open="));
 					vo.setOpening_date(openningDate);
-					
-				}catch(Exception e) {
+
+				} catch (Exception e) {
 				}
 				vo.setGenre(getMovieInfoByKind(movieUrl, "genre="));
 				vo.setCountry(getMovieInfoByKind(movieUrl, "nation="));
 				int runningTime = 0;
 				try {
-					runningTime =Integer.parseInt(getMovieRunningTime(movieUrl));
+					runningTime = Integer.parseInt(getMovieRunningTime(movieUrl));
 					vo.setRunning_time(runningTime);
-				}catch(Exception e) {
+				} catch (Exception e) {
 				}
 				String hitString = getMovieInfoByKind(movieUrl, "view=");
 				int hit = 0;
-				if(hitString.indexOf("예매율") != -1)
-					hit = Integer.parseInt(hitString.substring(hitString.indexOf("예매율") + 4, hitString.indexOf("예매율") + 5));
+				if (hitString.indexOf("예매율") != -1)
+					hit = Integer
+							.parseInt(hitString.substring(hitString.indexOf("예매율") + 4, hitString.indexOf("예매율") + 5));
 				vo.setHit(hit);
 				int audienceCount = 0;
 				try {
 					audienceCount = Integer.parseInt(getMovieAudienceCount(movieUrl));
-				}catch(Exception e) {
+				} catch (Exception e) {
 				}
 				vo.setAudience_count(audienceCount);
 				vo.setStory(getMovieStory(movieUrl));
@@ -90,29 +91,50 @@ public class Movies_JSOUP {
 		return html;
 	}
 
-	// 모든 년도를 탐색하는 메서드 - 핵심 메서드
-	public List<String> searchYearToGetMovies() {
-		List<String> list = new ArrayList<String>();
+	// 모든 년도를 탐색하는 메서드 - 핵심 메서드(각 년도의 url과 총 데이터(영화) 개수를 list에 담는다)
+	public List<Pair> searchYearToGetMovies() {
+		List<Pair> list = new ArrayList<Pair>();
 		Elements table = doc.select(QUERY_SELECTER_SEARCH_YEAR);
 
 		for (Element e : table) {
+			Pair pair = new Pair();
 			String year = e.attr("href");
 			String url = (NAVER_URL).substring(0, NAVER_URL.indexOf("bmovie_year"));
-			list.add(url + year);
+			String countStr = e.nextSibling().toString();
+			int count = 0;
+			try {
+				count = Integer.parseInt(countStr.substring(countStr.indexOf("(") + 1, countStr.indexOf(")")));
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+			pair.first = url + year;
+			pair.second = count;
+			list.add(pair);
 		}
 		return list;
 	}
 
 	// 무비 상세정보를 탐색하는 메서드 - 핵심 메서드
-	public List<String> searchListToGetMovies(String url) {
+	public List<String> searchListToGetMovies(String url, int count) {
 		List<String> list = new ArrayList<String>();
 		String code = "";
+		int page = 1;
+		String pageStr = String.valueOf(page);
+		String nextUrl = "&page=" + pageStr;
 		try {
-			Document doc2 = jsoup.connect(url).get();
+			Document doc2 = jsoup.connect(url + nextUrl).get();
 			Elements table = doc2.select(QUERY_SELECTOR_SEARCH_LIST);
-			for (Element e : table) {
-				code = e.attr("href");
-				list.add(NAVER_URL + code);
+
+			while (list.size() < count && list.size() + page <= count) {
+				for (Element e : table) {
+					code = e.attr("href");
+					list.add(NAVER_URL + code);
+				}
+				page++;
+				pageStr = String.valueOf(page);
+				nextUrl = "&page="+pageStr;
+				doc2 = jsoup.connect(url+nextUrl).get();
+				table = doc2.select(QUERY_SELECTOR_SEARCH_LIST);
 			}
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -182,14 +204,14 @@ public class Movies_JSOUP {
 				if (info.attr("href").contains("nation=")) {
 					Element target = info.parent();
 					target = target.nextElementSibling();
-					if(target == null) {
+					if (target == null) {
 						return "";
 					}
 					res = target.text();
 					break;
 				}
 			}
-			if(res.indexOf("분") != -1)
+			if (res.indexOf("분") != -1)
 				res = res.substring(0, res.indexOf("분"));
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -206,7 +228,7 @@ public class Movies_JSOUP {
 			Document doc2 = jsoup.connect(url).get();
 			Elements title = doc2.select("#content .article .mv_info .info_spec .count");
 			res = title.text();
-			if(res.indexOf("명") != -1)
+			if (res.indexOf("명") != -1)
 				res = res.substring(0, res.indexOf("명"));
 			res = res.replaceAll(",", "");
 		} catch (Exception ex) {
@@ -215,21 +237,22 @@ public class Movies_JSOUP {
 		}
 		return res;
 	}
-	// 무비의 story를 가져온다
-		public String getMovieStory(String url) {
-			String res = "";
 
-			try {
-				Document doc2 = jsoup.connect(url).get();
-				Elements title = doc2.select(".obj_section .video .story_area .h_tx_story");
-				res = title.text();
-				title = doc2.select(".obj_section .video .story_area p.con_tx");
-				System.out.println("story res : " + res);
-				res += title.text();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				System.out.println(EXCEPTION_MESSAGE);
-			}
-			return res;
+	// 무비의 story를 가져온다
+	public String getMovieStory(String url) {
+		String res = "";
+
+		try {
+			Document doc2 = jsoup.connect(url).get();
+			Elements title = doc2.select(".obj_section .video .story_area .h_tx_story");
+			res = title.text();
+			title = doc2.select(".obj_section .video .story_area p.con_tx");
+			System.out.println("story res : " + res);
+			res += title.text();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			System.out.println(EXCEPTION_MESSAGE);
 		}
+		return res;
+	}
 }
