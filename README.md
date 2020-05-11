@@ -44,4 +44,4 @@ Hello World!
 - - -
 --------------------------
 
-[link keyword][id] : Link: [Google][googlelink]
+[link keyword][id] : Link: Google https://google.com "Go google"
