@@ -54,3 +54,10 @@ Link: [Google][googlelink]
 [Google](https://google.com, "google link")
 
 외부링크 : <http://example.com/>
+
+강조
+*single asterisks*
+_single underscores_
+**double asterisks**
+__double underscoresa__
+~~cancelline~~
