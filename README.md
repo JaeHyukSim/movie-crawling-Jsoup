@@ -45,3 +45,8 @@ Hello World!
 --------------------------
 
 [link keyword][id] : Link: Google https://google.com "Go google"
+
+[link keyword][id]
+[id]: URL "Optional Title here"
+Link: [Google][googlelink]
+[googlelink]: https://google.com "Go google"
