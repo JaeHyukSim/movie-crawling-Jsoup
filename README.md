@@ -19,3 +19,7 @@ Header!!
 * first
   + second
     - third
+
+This is a normal paragraph
+    tHIS IS A CODE BLOCK;
+END CODE Block
