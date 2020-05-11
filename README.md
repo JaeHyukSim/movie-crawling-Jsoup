@@ -25,3 +25,11 @@ This is a normal paragraph
     tHIS IS A CODE BLOCK;
     
 END CODE Block
+
+<pre>
+<code>
+public class BootSpringBootApplication{
+  System.out.println("Hello, Shim!!!");
+}
+</code>
+</pre>
